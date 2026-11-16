@@ -1,109 +1,188 @@
-# equipe-dev
+<p align="center">
+  <img src=".claude-plugin/icon.png" alt="Ícone do equipe-dev" width="128" height="128">
+</p>
 
-Plugin do Claude Code com uma **equipe de agentes para desenvolver sites**. Você descreve o site que quer, e a equipe faz as perguntas, escreve os requisitos, define a arquitetura e o design, implementa, revisa e testa, sempre parando para pedir sua aprovação entre as etapas.
+<h1 align="center">equipe-dev</h1>
 
-| Agente | Papel | Escreve |
-|---|---|---|
-| `po` | Product Owner: entende o que você quer e escreve os requisitos | `docs/01-requisitos.md` |
-| `arquiteto` | Arquiteto / Tech Lead: escolhe a stack, planeja as tarefas e faz o code review | `docs/02-arquitetura.md`, `docs/05-code-review.md` |
-| `ui-ux` | Designer: direção visual, wireframes, design tokens, acessibilidade | `docs/03-design.md` |
-| `desenvolvedor` | Implementa o site tarefa por tarefa e corrige o que vier do review e dos testes | código + `docs/progresso.md` |
-| `tester` | QA: valida os critérios de aceite, links, formulários, responsividade, SEO e acessibilidade | `docs/04-relatorio-testes.md` |
+<p align="center">
+  Uma equipe de agentes do <a href="https://claude.com/claude-code">Claude Code</a> que cria sites do zero:<br>
+  da conversa inicial ao site testado, com você aprovando cada etapa.
+</p>
 
-O comando `/equipe` é o **orquestrador**: roda na sua sessão principal, chama cada agente, repassa as perguntas para você e controla os checkpoints.
+<p align="center">
+  <img alt="versão" src="https://img.shields.io/badge/vers%C3%A3o-1.0.0-blue">
+  <img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-orange">
+  <img alt="idioma" src="https://img.shields.io/badge/idioma-pt--BR-green">
+  <img alt="licença" src="https://img.shields.io/badge/licen%C3%A7a-MIT-lightgrey">
+</p>
+
+---
+
+## O que é
+
+O **equipe-dev** é um plugin do Claude Code que simula uma pequena equipe de desenvolvimento web. Em vez de pedir "faz um site" e receber um resultado genérico, você passa por um processo de verdade:
+
+1. um **Product Owner** faz perguntas para entender o seu negócio;
+2. um **Arquiteto** escolhe a tecnologia mais simples que resolve o problema;
+3. um **Designer** cria uma identidade visual com personalidade;
+4. um **Desenvolvedor** implementa tarefa por tarefa, e o Arquiteto revisa o código;
+5. um **Tester** confere cada requisito e reporta os bugs, que voltam para correção.
+
+Você só precisa digitar um comando e responder às perguntas. Em cada etapa a equipe para, mostra um resumo e **só segue com a sua aprovação**.
+
+```
+/equipe quero um site para minha barbearia
+```
+
+## A equipe
+
+| | Agente | Papel | Entrega |
+|---|---|---|---|
+| 🧭 | **`po`** — Product Owner | Faz perguntas objetivas em rodadas curtas e transforma as respostas em requisitos com histórias de usuário e critérios de aceite | `docs/01-requisitos.md` |
+| 🏗️ | **`arquiteto`** — Arquiteto / Tech Lead | Escolhe a stack (HTML/CSS/JS, Astro, Next.js...), define pastas, convenções, deploy e um plano de tarefas pequenas. Depois faz o code review | `docs/02-arquitetura.md`<br>`docs/05-code-review.md` |
+| 🎨 | **`ui-ux`** — Designer | Cria a direção visual, mapa do site, wireframes em texto, design tokens, componentes e checklist de acessibilidade WCAG AA | `docs/03-design.md` |
+| 💻 | **`desenvolvedor`** — Desenvolvedor | Implementa uma tarefa por vez, sem mudar escopo nem stack por conta própria, e corrige o que vier do review e dos testes | código do site<br>`docs/progresso.md` |
+| 🧪 | **`tester`** — Tester / QA | Valida cada critério de aceite, links, formulários, responsividade, acessibilidade, SEO e build. Escreve testes automatizados quando possível | `docs/04-relatorio-testes.md` |
+
+O comando **`/equipe`** é o orquestrador. Ele roda na sua sessão principal (subagentes não chamam outros subagentes), chama cada agente na hora certa, repassa as perguntas para você e controla os checkpoints.
+
+## Como funciona
+
+```mermaid
+flowchart TD
+    A(["/equipe descrição do site"]) --> B[0. Prepara docs/ ou retoma]
+    B --> C[1. Descoberta<br/>PO pergunta, você responde<br/>até 3 rodadas]
+    C --> C1{{✋ Aprova requisitos?}}
+    C1 -- mudanças --> C
+    C1 -- sim --> D[2. Arquitetura<br/>stack + plano de tarefas]
+    D --> D1{{✋ Aprova arquitetura?}}
+    D1 -- mudanças --> D
+    D1 -- sim --> E[3. Design<br/>direção visual, wireframes, tokens]
+    E --> E1{{✋ Aprova design?}}
+    E1 -- mudanças --> E
+    E1 -- sim --> F[4. Desenvolvimento<br/>Dev implementa em blocos<br/>Arquiteto revisa, Dev corrige]
+    F --> F1{{✋ Aprova o site rodando local?}}
+    F1 -- ajustes --> F
+    F1 -- sim --> G[5. Testes<br/>Tester valida, Dev corrige<br/>até 2 ciclos]
+    G --> H([✋ Checkpoint final<br/>entregas, pendências, próximos passos])
+```
+
+- **Nada avança sem a sua aprovação.** Se pedir mudanças, o agente responsável ajusta e o checkpoint se repete.
+- **Resumos curtos.** Em cada checkpoint você vê os pontos principais e o caminho do arquivo para ler completo.
+- **Pode parar e voltar depois.** Rode `/equipe` de novo na mesma pasta e o orquestrador retoma de onde parou, lendo `docs/progresso.md`.
+- **Tudo em português.**
 
 ## Instalação
 
-Este repositório é ao mesmo tempo o plugin e um marketplace com um único plugin.
+Pré-requisito: [Claude Code](https://claude.com/claude-code) instalado.
 
 ```
 /plugin marketplace add victordosanjos1/equipe-dev
 /plugin install equipe-dev@equipe-dev
 ```
 
-Depois, reinicie o Claude Code (ou rode `/reload-plugins`, se disponível) para carregar o comando e os agentes.
+Depois, reinicie o Claude Code para carregar o comando e os agentes.
 
-> **Repositório privado:** o Claude Code baixa o marketplace com o `git` da sua máquina, então o git precisa estar autenticado no GitHub com uma conta que tenha acesso ao repositório. Teste com `git ls-remote https://github.com/victordosanjos1/equipe-dev.git`; se pedir senha ou der erro, autentique com `gh auth login` (e `gh auth setup-git`) ou com o Git Credential Manager. Para atualizações automáticas em segundo plano, defina a variável de ambiente `GITHUB_TOKEN` com um token que tenha acesso ao repositório.
+> [!IMPORTANT]
+> **Repositório privado:** o Claude Code baixa o marketplace usando o `git` da sua máquina, então o git precisa estar autenticado no GitHub com uma conta que tenha acesso a este repositório.
+> Teste com `git ls-remote https://github.com/victordosanjos1/equipe-dev.git`. Se pedir senha ou der erro, autentique com `gh auth login` e `gh auth setup-git` (ou pelo Git Credential Manager).
+> Para atualizações automáticas em segundo plano, defina a variável de ambiente `GITHUB_TOKEN` com um token que tenha acesso ao repositório.
 
-### Testar localmente sem instalar do GitHub
+<details>
+<summary>Instalar a partir de uma pasta local (para testar alterações)</summary>
 
 ```
 /plugin marketplace add C:/caminho/para/equipe-dev
 /plugin install equipe-dev@equipe-dev
 ```
 
+</details>
+
 ## Como usar
 
-Abra o Claude Code na pasta (vazia ou não) onde o site vai ficar e rode:
+Abra o Claude Code na pasta onde o site vai ficar (pode ser vazia) e rode:
 
 ```
 /equipe quero um site para minha barbearia
 ```
 
-Se o trabalho for interrompido, rode `/equipe` de novo na mesma pasta: o orquestrador lê `docs/progresso.md` e **retoma de onde parou**.
-
-Você também pode chamar um agente sozinho, por exemplo: "use o agente tester para revisar a acessibilidade do site".
-
-## Fluxo das etapas
+Exemplo do começo de uma sessão:
 
 ```
-0. Preparação ── cria docs/ e docs/progresso.md (ou retoma)
-1. Descoberta ── PO faz perguntas (até 3 rodadas) e escreve os requisitos  → ✋ CHECKPOINT
-2. Arquitetura ─ Arquiteto escolhe a stack e cria o plano de tarefas        → ✋ CHECKPOINT
-3. Design ────── UI/UX define direção visual, wireframes e tokens            → ✋ CHECKPOINT
-4. Desenvolvimento ─ Desenvolvedor implementa em blocos → Arquiteto revisa
-                     → Desenvolvedor corrige críticos/importantes            → ✋ CHECKPOINT (como rodar local)
-5. Testes ────── Tester valida → Desenvolvedor corrige → Tester re-testa
-                 (até 2 ciclos)                                              → ✋ CHECKPOINT FINAL
+> /equipe quero um site para minha barbearia
+
+Criei docs/progresso.md. Vou começar pela descoberta com o PO.
+
+Rodada 1 — algumas perguntas rápidas:
+  1. Qual o objetivo principal do site?
+     ○ Agendamentos   ○ Mostrar serviços e preços   ○ Fortalecer a marca
+  2. Como os clientes agendam hoje?
+     ○ WhatsApp   ○ Aplicativo de agendamento   ○ Telefone   ○ Só presencial
+  ...
 ```
 
-Em cada checkpoint você recebe um resumo curto e o caminho do arquivo para ler completo. Nada avança sem a sua aprovação explícita; se você pedir mudanças, o agente responsável ajusta e o checkpoint se repete.
+Também dá para chamar um agente sozinho, por exemplo:
 
-## Arquivos gerados em `docs/` (no projeto do site)
+```
+use o agente tester para revisar a acessibilidade do site
+```
+
+## Arquivos gerados no projeto do site
+
+Os agentes conversam entre si por arquivos na pasta `docs/` do projeto que está sendo desenvolvido:
 
 | Arquivo | Conteúdo |
 |---|---|
-| `docs/progresso.md` | Etapa atual, checklist das etapas, perguntas e respostas da descoberta, decisões, histórico, tarefas de desenvolvimento e dúvidas |
-| `docs/01-requisitos.md` | Visão, público, escopo (dentro/fora), páginas, histórias de usuário com critérios de aceite, requisitos não funcionais, dúvidas em aberto |
-| `docs/02-arquitetura.md` | Stack com justificativa, estrutura de pastas, convenções, como rodar, deploy e plano de tarefas numerado (T01…) |
-| `docs/03-design.md` | Direção visual, mapa do site, fluxos, wireframes em texto, design tokens, componentes, responsivo, checklist WCAG AA |
-| `docs/04-relatorio-testes.md` | Status de cada critério de aceite (passou/falhou), verificações gerais e bugs com passos para reproduzir e severidade |
-| `docs/05-code-review.md` | Problemas classificados em crítico / importante / sugestão |
+| `docs/progresso.md` | Etapa atual, checklist das etapas, perguntas e respostas da descoberta, decisões, histórico, tarefas e dúvidas do desenvolvimento |
+| `docs/01-requisitos.md` | Visão, público, escopo (dentro/fora), páginas, histórias de usuário (`HU-xx`) com critérios de aceite (`CA-xx.y`), requisitos não funcionais, dúvidas em aberto |
+| `docs/02-arquitetura.md` | Stack com justificativa, estrutura de pastas, convenções, como rodar, deploy e plano de tarefas (`T01`, `T02`...) |
+| `docs/03-design.md` | Direção visual, mapa do site, fluxos, wireframes em texto, design tokens, componentes, comportamento responsivo, checklist WCAG AA |
+| `docs/04-relatorio-testes.md` | Status de cada critério de aceite (passou/falhou), verificações gerais e bugs (`BUG-xx`) com passos para reproduzir e severidade |
+| `docs/05-code-review.md` | Problemas (`CR-xx`) classificados em crítico / importante / sugestão |
 
-Os agentes conversam entre si por esses arquivos. Você pode editá-los à mão a qualquer momento; o próximo agente vai ler a versão atualizada.
+Você pode editar esses arquivos à mão a qualquer momento: o próximo agente vai ler a versão atualizada.
 
-## Estrutura do plugin
+## Estrutura do repositório
 
 ```
 equipe-dev/
 ├── .claude-plugin/
 │   ├── plugin.json        # manifesto do plugin
-│   └── marketplace.json   # marketplace que lista este próprio plugin (source "./")
+│   ├── marketplace.json   # marketplace que lista este próprio plugin (source "./")
+│   └── icon.png           # ícone do plugin
 ├── agents/
-│   ├── po.md
-│   ├── arquiteto.md
-│   ├── ui-ux.md
-│   ├── desenvolvedor.md
-│   └── tester.md
+│   ├── po.md              # Product Owner
+│   ├── arquiteto.md       # Arquiteto / Tech Lead
+│   ├── ui-ux.md           # Designer UI/UX
+│   ├── desenvolvedor.md   # Desenvolvedor
+│   └── tester.md          # Tester / QA
 ├── commands/
 │   └── equipe.md          # orquestrador (/equipe)
+├── LICENSE
 └── README.md
 ```
+
+Cada agente é um arquivo Markdown com frontmatter (`name`, `description`, `tools`) seguido do prompt de sistema.
 
 ## Como atualizar o plugin depois de editar os agentes
 
 1. Edite os arquivos em `agents/` ou `commands/`.
 2. Aumente a versão em `.claude-plugin/plugin.json` **e** em `.claude-plugin/marketplace.json` (ex.: `1.0.0` → `1.1.0`). O Claude Code usa a versão para perceber que há atualização.
-3. Faça commit e push:
+3. Valide, faça commit e push:
    ```
+   claude plugin validate .
    git add -A
    git commit -m "Ajusta prompt do tester"
    git push
    ```
-4. No Claude Code:
+4. No Claude Code, atualize o marketplace:
    ```
    /plugin marketplace update equipe-dev
    ```
-   e depois atualize o plugin pelo menu `/plugin` (aba de plugins instalados) ou reinstale com `/plugin install equipe-dev@equipe-dev`. Reinicie o Claude Code para carregar as mudanças.
+5. Atualize o plugin pelo menu `/plugin` (aba de plugins instalados) ou reinstale com `/plugin install equipe-dev@equipe-dev`. Reinicie o Claude Code para carregar as mudanças.
 
-Se instalou a partir de uma pasta local, basta o passo 4 (não precisa de push).
+Se instalou a partir de uma pasta local, pule o push no passo 3.
+
+## Licença
+
+[MIT](LICENSE)
