@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img alt="versão" src="https://img.shields.io/badge/vers%C3%A3o-1.1.0-blue">
+  <img alt="versão" src="https://img.shields.io/badge/vers%C3%A3o-1.2.0-blue">
   <img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-orange">
   <img alt="idioma" src="https://img.shields.io/badge/idioma-pt--BR-green">
   <img alt="licença" src="https://img.shields.io/badge/licen%C3%A7a-MIT-lightgrey">
@@ -40,8 +40,8 @@ Você só precisa digitar um comando e responder às perguntas. Em cada etapa a 
 |---|---|---|---|
 | 🧭 | **`po`** — Product Owner | Pesquisa a concorrência na web (o que outros sites do segmento oferecem e com que tecnologia), faz perguntas objetivas em rodadas curtas e transforma as respostas em requisitos com histórias de usuário e critérios de aceite | `docs/00-concorrencia.md`<br>`docs/01-requisitos.md` |
 | 🏗️ | **`arquiteto`** — Arquiteto / Tech Lead | Escolhe a stack (HTML/CSS/JS, Astro, Next.js...), define pastas, convenções, deploy e um plano de tarefas pequenas. Depois faz o code review | `docs/02-arquitetura.md`<br>`docs/05-code-review.md` |
-| 🎨 | **`ui-ux`** — Designer | Cria a direção visual (com referências do [Taste Skill](https://www.tasteskill.dev/), [Transitions.dev](http://transitions.dev/) e [React Bits](https://reactbits.dev/)), mapa do site, wireframes, design tokens, componentes, animações e checklist WCAG AA. Desenha as telas no **Figma** | `docs/03-design.md`<br>telas no Figma |
-| 💻 | **`desenvolvedor`** — Desenvolvedor | Implementa uma tarefa por vez, consultando as telas do Figma, sem mudar escopo nem stack por conta própria, e corrige o que vier do review e dos testes | código do site<br>`docs/progresso.md` |
+| 🎨 | **`ui-ux`** — Designer | Cria a direção visual (com referências do [Taste Skill](https://www.tasteskill.dev/), [Transitions.dev](http://transitions.dev/) e [React Bits](https://reactbits.dev/)), mapa do site, wireframes, design tokens, componentes, animações e checklist WCAG AA. | `docs/03-design.md` |
+| 💻 | **`desenvolvedor`** — Desenvolvedor | Implementa uma tarefa por vez, sem mudar escopo nem stack por conta própria, e corrige o que vier do review e dos testes | código do site<br>`docs/progresso.md` |
 | 🧪 | **`tester`** — Tester / QA | Valida cada critério de aceite, links, formulários, responsividade, acessibilidade, SEO e build. Escreve testes automatizados quando possível | `docs/04-relatorio-testes.md` |
 
 O comando **`/equipe`** é o orquestrador. Ele roda na sua sessão principal (subagentes não chamam outros subagentes), chama cada agente na hora certa, repassa as perguntas para você e controla os checkpoints.
@@ -57,7 +57,7 @@ flowchart TD
     C1 -- sim --> D[2. Arquitetura<br/>stack + plano de tarefas]
     D --> D1{{✋ Aprova arquitetura?}}
     D1 -- mudanças --> D
-    D1 -- sim --> E[3. Design<br/>direção visual, tokens,<br/>telas no Figma]
+    D1 -- sim --> E[3. Design<br/>direção visual, tokens,<br/>animações]
     E --> E1{{✋ Aprova design?}}
     E1 -- mudanças --> E
     E1 -- sim --> F[4. Desenvolvimento<br/>Dev implementa em blocos<br/>Arquiteto revisa, Dev corrige]
@@ -75,14 +75,6 @@ flowchart TD
 ## Instalação
 
 Pré-requisito: [Claude Code](https://claude.com/claude-code) instalado.
-
-Recomendado: o **Figma MCP** conectado, para o UI/UX desenhar as telas e o Desenvolvedor consultá-las. Use o conector do Figma no claude.ai ou adicione pelo terminal:
-
-```
-claude mcp add --transport http --scope user figma https://mcp.figma.com/mcp
-```
-
-Depois rode `/mcp` para entrar com a conta do Figma. Para criar e editar telas pelo MCP, a conta pode precisar de um lugar com permissão de edição (Full/Dev), não só "View". Sem o Figma, a equipe funciona normalmente e o design fica só no documento.
 
 ### Modelos usados
 
@@ -154,7 +146,7 @@ Os agentes conversam entre si por arquivos na pasta `docs/` do projeto que está
 | `docs/00-concorrencia.md` | Sites concorrentes e de referência analisados, com páginas, funcionalidades, tecnologia, pontos fortes e fracos, padrões do mercado e oportunidades de diferenciação |
 | `docs/01-requisitos.md` | Visão, público, escopo (dentro/fora), páginas, histórias de usuário (`HU-xx`) com critérios de aceite (`CA-xx.y`), requisitos não funcionais, dúvidas em aberto |
 | `docs/02-arquitetura.md` | Stack com justificativa, estrutura de pastas, convenções, como rodar, deploy e plano de tarefas (`T01`, `T02`...) |
-| `docs/03-design.md` | Direção visual, mapa do site, fluxos, wireframes em texto, design tokens, componentes, animações, dependências de UI propostas, links das telas no Figma, comportamento responsivo, checklist WCAG AA |
+| `docs/03-design.md` | Direção visual, mapa do site, fluxos, wireframes em texto, design tokens, componentes, animações, dependências de UI propostas, comportamento responsivo, checklist WCAG AA |
 | `docs/04-relatorio-testes.md` | Status de cada critério de aceite (passou/falhou), verificações gerais e bugs (`BUG-xx`) com passos para reproduzir e severidade |
 | `docs/05-code-review.md` | Problemas (`CR-xx`) classificados em crítico / importante / sugestão |
 

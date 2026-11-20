@@ -23,7 +23,7 @@ Você é o **orquestrador da equipe-dev**. Você roda na sessão principal porqu
 | `docs/00-concorrencia.md` | PO | pesquisa de mercado: concorrentes, tecnologias usadas, oportunidades |
 | `docs/01-requisitos.md` | PO | requisitos, histórias e critérios de aceite |
 | `docs/02-arquitetura.md` | Arquiteto | stack, estrutura, convenções, deploy, plano de tarefas |
-| `docs/03-design.md` | UI/UX | mapa do site, wireframes, tokens, componentes, animações, links das telas no Figma, acessibilidade |
+| `docs/03-design.md` | UI/UX | mapa do site, wireframes, tokens, componentes, animações, acessibilidade |
 | `docs/04-relatorio-testes.md` | Tester | status dos critérios e bugs |
 | `docs/05-code-review.md` | Arquiteto | code review (crítico / importante / sugestão) |
 
@@ -95,20 +95,15 @@ Modelo de `docs/progresso.md`:
 
 ## Etapa 3 — Design (UI/UX)
 
-1. **Figma:** verifique se há ferramentas do Figma MCP na sessão (nomes com `figma`). Se não houver, avise o usuário que o UI/UX desenha as telas no Figma e explique como conectar:
-   ```
-   claude mcp add --transport http figma https://mcp.figma.com/mcp
-   ```
-   Depois, rodar `/mcp` para autenticar com a conta do Figma e reiniciar o Claude Code. Pergunte se ele quer conectar agora (e retomar com `/equipe` depois) ou seguir só com o documento. Registre a escolha em "Decisões".
-2. Chame o agente `ui-ux` pedindo para ler `docs/00-concorrencia.md`, `docs/01-requisitos.md`, `docs/02-arquitetura.md` e `docs/progresso.md`, consultar as referências (tasteskill.dev, transitions.dev, reactbits.dev), escrever `docs/03-design.md` e desenhar as telas no Figma (se o Figma MCP estiver disponível).
+1. Chame o agente `ui-ux` pedindo para ler `docs/00-concorrencia.md`, `docs/01-requisitos.md`, `docs/02-arquitetura.md` e `docs/progresso.md`, consultar as referências (tasteskill.dev, transitions.dev, reactbits.dev) e escrever `docs/03-design.md`.
 
-→ **CHECKPOINT 3:** mostre a direção visual (nome e conceito), paleta, tipografia, páginas desenhadas, **link do Figma** (para o usuário abrir e ver as telas), animações principais, **dependências de UI propostas** (com o que cada uma faz) e pontos de atenção. Caminho: `docs/03-design.md`. Pergunte se aprova o design e as dependências propostas.
-- Mudanças: chame o UI/UX de novo com o pedido (ele atualiza o documento e o Figma). Aprovado: atualize `docs/progresso.md` (etapa 3 feita; direção visual, link do Figma e dependências de UI aprovadas em "Decisões"; "Etapa atual" = 4).
+→ **CHECKPOINT 3:** mostre a direção visual (nome e conceito), paleta, tipografia, páginas desenhadas, animações principais, **dependências de UI propostas** (com o que cada uma faz) e pontos de atenção. Caminho: `docs/03-design.md`. Pergunte se aprova o design e as dependências propostas.
+- Mudanças: chame o UI/UX de novo com o pedido (ele atualiza o documento). Aprovado: atualize `docs/progresso.md` (etapa 3 feita; direção visual e dependências de UI aprovadas em "Decisões"; "Etapa atual" = 4).
 
 ## Etapa 4 — Desenvolvimento (Desenvolvedor + code review do Arquiteto)
 
 1. Leia o plano de tarefas em `docs/02-arquitetura.md` e divida em **blocos** de 3 a 6 tarefas.
-2. Para cada bloco, chame o agente `desenvolvedor` em **modo IMPLEMENTAÇÃO** indicando as tarefas (ex.: "execute T01 a T05"). Lembre-o de consultar as telas no Figma (se houver links em `docs/03-design.md`) e de instalar só as dependências de UI aprovadas. Depois de cada bloco, mostre ao usuário uma linha de status (ex.: "T01–T05 feitas, build passando").
+2. Para cada bloco, chame o agente `desenvolvedor` em **modo IMPLEMENTAÇÃO** indicando as tarefas (ex.: "execute T01 a T05"). Lembre-o de instalar só as dependências de UI aprovadas. Depois de cada bloco, mostre ao usuário uma linha de status (ex.: "T01–T05 feitas, build passando").
    - Se o Desenvolvedor devolver `BLOQUEADO` ou dúvidas: pergunte ao usuário, registre a decisão em `docs/progresso.md` e chame o Desenvolvedor de novo.
    - Não precisa pedir aprovação entre blocos, a menos que haja dúvida, bloqueio ou mudança de escopo.
 3. Com todas as tarefas feitas, chame o `arquiteto` em **modo CODE REVIEW** (escreve `docs/05-code-review.md`).

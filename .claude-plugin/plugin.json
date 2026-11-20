@@ -1,6 +1,6 @@
 {
   "name": "equipe-dev",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Equipe de agentes para desenvolver sites: Product Owner, Arquiteto/Tech Lead, UI/UX, Desenvolvedor e Tester/QA, coordenados pelo comando /equipe com checkpoints de aprovação em cada etapa.",
   "author": {
     "name": "victordosanjos1"
